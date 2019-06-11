@@ -1,8 +1,25 @@
-<script src="../node_modules/vue/dist/vue.js"></script>
+<!-- <script src="../node_modules/vue/dist/vue.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 
 <script>
 const RulesPlugin = {
   // Implement this!
+  install (Vue, options) {
+  	Vue.mixin({
+  		created () {
+  			const rules = this.$options.rules
+  			if (rules) {
+		  		Object.keys(rules).forEach(key => {
+		  			this.$watch(key, (newValue, oldValue) => {
+		  				if (! rules[key].validate(newValue)) {
+		  					console.log(rules[key].message)
+		  				}
+		  			})
+		  		});
+  			}
+  		}
+  	})
+  } 
 }
 
 Vue.use(RulesPlugin)
