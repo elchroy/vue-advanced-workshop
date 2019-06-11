@@ -3,9 +3,43 @@
 // exposing it on window is necessary for testing
 window.Dep = class Dep {
   // Implement this!
+  constructor () {
+  	// this.subscribers = []
+    // Or you can just use ES6's Set class
+    this.subscribers = new Set();
+  }
+
+  depend () {
+  	if (activeUpdate) {
+  		// this.subscribers.pust(activeUpdate) // add this updates to the list of subscribers
+      // OR using Set,
+      this.subscribers.add(activeUpdate)
+  	}
+  }
+
+  notify () {
+  	this.subscribers.forEach(subscriber => subscriber()) // run all subscribers
+  }
 }
+
+let activeUpdate;
 
 function autorun (update) {
   // Implement this!
+  function wrappedUpdate () {
+    // The wrappedUpdate function call the udate function,
+    // but sets the value of activeUpdate global variable before setting it
+    // So whenever we call the autorun function,
+    // the activeUpdate variable is set and the update function is run.
+    // And if we want to call the depend() from the update function,
+    // we can even access the activeUpdate from there.
+    // So that whenever the depend method runs, the activeUpdate variable is already available.
+  	activeUpdate = wrappedUpdate
+  	update()
+  	activeUpdate = null
+  }
+
+  wrappedUpdate()
+  
 }
 </script>
