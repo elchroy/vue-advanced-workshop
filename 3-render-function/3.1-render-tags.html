@@ -7,6 +7,10 @@
 <script>
 Vue.component('example', {
   // Implement this!
+  props: ['tags'],
+  render (createElement) {
+  	return createElement('div', this.tags.map((tag, i) => createElement(tag, i)))
+  }
 })
 
 new Vue({ el: '#app' })
