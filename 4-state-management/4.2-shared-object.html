@@ -12,12 +12,32 @@
 // all instances of it should share the same count state
 // and a button that increments all counters at the same time
 
+// this is the shared object
+const state = {
+	count:0
+}
 const Counter = {
+  // if you don't return an object in data,
+  // vue does not make it reactive.
   // Implement this!
+  data () {
+  	return state
+  },
+  // template: `<div>{{ count }}</div>`
+  render (h) {
+  	return h('div', this.count)
+  }
 }
 
 new Vue({
   el: '#app',
-  // Implement this!
+
+  methods: {
+  	inc () {
+  		state.count++
+  	}
+  },
+
+  components: { Counter }
 })
 </script>
