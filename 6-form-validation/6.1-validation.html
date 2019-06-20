@@ -19,6 +19,41 @@
 <script>
 const validationPlugin = {
   // Implement this!
+  install (Vue) {
+    Vue.mixin({
+      computed: {
+        $v () {
+          let valid = true
+          const errors = []
+          
+          const validations = this.$options.validations
+          Object.keys(validations || {}).forEach(key => {
+            const validationRule = validations[key]
+            let currentValue = this[key] // we have access to the component instance and reactive properties, text\email
+            const result = validationRule.validate(currentValue)
+            if (! result) {
+              valid = false
+              errors.push(validationRule.message(key, currentValue))
+            }
+          })
+
+          return { errors, valid }
+        }
+      },
+      beforeCreated () {
+        // we're adding this as a computed property,
+        // BEFORE creating the vue instance
+        // the $options are still very available
+        this.$options.computed = Object.assign({},
+          // here we're retaining any computed properties
+          // that had already been created
+          // we're adding the $v to it, and putting everything
+          // into a new object
+          this.$options.computed, {}
+        )
+      }
+    })
+  }
 }
 
 Vue.use(validationPlugin)
